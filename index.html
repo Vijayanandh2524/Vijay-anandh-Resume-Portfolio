@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vijay Anandh A - Portfolio Home</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+
+  <style>
+    #sidebar {
+      transition: transform 0.3s ease;
+      z-index: 30;
+    }
+    #sidebar.closed {
+      transform: translateX(-100%);
+    }
+    #dark-toggle + div {
+      transition: background-color 0.3s ease;
+      position: relative;
+      width: 40px;
+      height: 20px;
+      background-color: #cbd5e1;
+      border-radius: 9999px;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    #dark-toggle + div::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 9999px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+    #dark-toggle:checked + div::after {
+      transform: translateX(20px);
+    }
+    #dark-toggle-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #475569;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+    #dark-toggle-container.dark {
+      color: #94a3b8;
+    }
+
+    /* Popup overlay */
+    #resume-popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      padding: 1rem;
+    }
+    #resume-popup.active {
+      display: flex;
+    }
+    #resume-popup .popup-content {
+      background: white;
+      border-radius: 0.5rem;
+      width: 90%;
+      max-width: 900px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    #resume-popup .popup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #ddd;
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    #resume-popup .popup-body {
+      flex-grow: 1;
+      overflow: auto;
+    }
+    #resume-popup iframe {
+      width: 100%;
+      height: 80vh;
+      border: none;
+      border-radius: 0 0 0.5rem 0.5rem;
+    }
+    #resume-popup button {
+      background-color: #2563eb; /* blue-600 */
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    #resume-popup button:hover {
+      background-color: #1e40af; /* blue-800 */
+    }
+
+  </style>
+</head>
+<body class="bg-blue-50 text-gray-900 font-sans transition-colors duration-300 dark:bg-gray-900 dark:text-gray-100 flex min-h-screen overflow-x-hidden">
+
+  <!-- Hamburger button -->
+  <button id="menu-btn" aria-label="Toggle Menu" class="md:hidden fixed top-4 left-4 z-40 p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  </button>
+
+  <!-- Sidebar -->
+  <nav id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-white dark:bg-gray-800 shadow-lg p-6 flex flex-col space-y-6 md:translate-x-0 closed md:closed-removed">
+    <a href="#home" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Home</a>
+    <a href="skills.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Skills & Certifications</a>
+    <a href="projects.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Projects</a>
+    <a href="achivements.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Achivements</a>
+    <a href="contact.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Contact</a>
+  </nav>
+
+  <!-- Dark Mode Toggle -->
+  <label id="dark-toggle-container" for="dark-toggle" class="select-none">
+    <input type="checkbox" id="dark-toggle" class="hidden" />
+    <div></div>
+    Dark Mode
+  </label>
+
+  <!-- Main Content -->
+  <main id="main-content" class="flex-1 transition-all duration-300 mx-auto p-6 md:p-12 max-w-6xl" style="margin-left: 0;">
+    <section id="home" class="flex flex-col md:flex-row items-start px-6 md:px-12 space-y-10 md:space-y-0 md:space-x-16">
+      
+      <!-- Left column: Photo and Name -->
+      <div class="flex flex-col items-center md:items-start md:flex-shrink-0">
+        <img src="photo.jpg" alt="Vijay Anandh A" class="rounded-lg shadow-lg w-48 h-48 object-cover" />
+        <h1 class="text-4xl md:text-5xl font-bold text-blue-800 mt-6 dark:text-blue-400">
+          Vijay Anandh A
+        </h1>
+      </div>
+
+      <!-- Right column: Resume button -->
+      <div class="flex flex-col justify-center">
+        <button id="open-resume-btn" 
+          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors">
+          Resume (PDF)
+        </button>
+      </div>
+    </section>
+
+    <!-- Intro text at bottom -->
+    <section class="mt-16 px-6 md:px-12 max-w-4xl mx-auto">
+      <p id="intro-text" class="text-gray-700 leading-relaxed text-lg whitespace-pre-line dark:text-gray-300"></p>
+    </section>
+  </main>
+
+  <!-- Resume Preview Popup -->
+  <div id="resume-popup" role="dialog" aria-modal="true" aria-labelledby="resume-popup-title" tabindex="-1">
+    <div class="popup-content">
+      <div class="popup-header">
+        <span id="resume-popup-title">Resume Preview</span>
+        <div>
+          <button id="download-resume-btn" title="Download Resume">Download</button>
+          <button id="print-resume-btn" title="Print Resume">Print</button>
+          <button id="close-resume-btn" aria-label="Close Preview" style="background-color:#ef4444; margin-left:0.5rem;">Close</button>
+        </div>
+      </div>
+      <div class="popup-body">
+        <iframe id="resume-frame" src="vijay anandh resume.pdf"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Typing animation for intro text
+    function typeText(element, text, speed = 50) {
+      element.textContent = '';
+      let i = 0;
+      function type() {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        }
+      }
+      type();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const intro = `Finance and accounting professional with a 7.4 CGPA from Sri Krishna Arts and Science College and hands-on SAP ERP experience through an internship at Dalmia Cement. Authored and published three books, with two carrying ISBN recognition, and currently working on a new title focused on the share market. Skilled in financial analysis, budgeting, forecasting, and risk management, supported by over five years of active share market experience. Well-versed in project management methodologies including Agile, ITIL V4, and Waterfall. i have technical skills such as HTML, CSS, Java Script and Python. Proficient in MS Power BI, Data Modelling, with a strong focus on automation, data-driven decision-making, and continuous innovation. Seeking a role that blends financial expertise with strategic and analytical insight.`;
+      const introElement = document.getElementById('intro-text');
+      if (introElement) {
+        typeText(introElement, intro, 25);
+      }
+
+      // Dark mode toggle
+      const darkToggle = document.getElementById('dark-toggle');
+      const html = document.documentElement;
+      const darkToggleLabel = document.getElementById('dark-toggle-container');
+      if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        html.classList.add('dark');
+        darkToggle.checked = true;
+        darkToggleLabel.classList.add('dark');
+      }
+
+      darkToggle.addEventListener('change', () => {
+        if (darkToggle.checked) {
+          html.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+          darkToggleLabel.classList.add('dark');
+        } else {
+          html.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+          darkToggleLabel.classList.remove('dark');
+        }
+      });
+
+      // Sidebar toggle
+      const menuBtn = document.getElementById('menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('main-content');
+
+      function setDesktopLayout() {
+        sidebar.classList.remove('closed');
+        mainContent.style.marginLeft = '224px';
+      }
+      function setMobileLayout() {
+        sidebar.classList.add('closed');
+        mainContent.style.marginLeft = '0';
+      }
+
+      function handleResize() {
+        if (window.innerWidth >= 768) {
+          setDesktopLayout();
+        } else {
+          setMobileLayout();
+        }
+      }
+
+      menuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('closed');
+        if (sidebar.classList.contains('closed')) {
+          mainContent.style.marginLeft = '0';
+        } else {
+          mainContent.style.marginLeft = '224px';
+        }
+      });
+
+      window.addEventListener('resize', handleResize);
+      handleResize();
+
+      // Resume popup logic
+      const openBtn = document.getElementById('open-resume-btn');
+      const popup = document.getElementById('resume-popup');
+      const closeBtn = document.getElementById('close-resume-btn');
+      const downloadBtn = document.getElementById('download-resume-btn');
+      const printBtn = document.getElementById('print-resume-btn');
+      const iframe = document.getElementById('resume-frame');
+      const resumeURL = 'vijay anandh resume.pdf';
+
+      openBtn.addEventListener('click', () => {
+        popup.classList.add('active');
+        popup.focus();
+      });
+
+      closeBtn.addEventListener('click', () => {
+        popup.classList.remove('active');
+      });
+
+      // Close popup when clicking outside content
+      popup.addEventListener('click', (e) => {
+        if (e.target === popup) {
+          popup.classList.remove('active');
+        }
+      });
+
+      // Download button
+      downloadBtn.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.href = resumeURL;
+        link.download = 'Vijay_Anandh_Resume.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+
+      // Print button
+      printBtn.addEventListener('click', () => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+      });
+    });
+  </script>
+
+</body>
+</html>

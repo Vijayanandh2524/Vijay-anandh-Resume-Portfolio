@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projects</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    };
+  </script>
+
+  <style>
+    #dark-toggle + div {
+      transition: background-color 0.3s ease;
+      position: relative;
+      width: 40px;
+      height: 20px;
+      background-color: #cbd5e1;
+      border-radius: 9999px;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    #dark-toggle + div::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 9999px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+    #dark-toggle:checked + div::after {
+      transform: translateX(20px);
+    }
+    #dark-toggle-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #475569;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+    #dark-toggle-container.dark {
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen overflow-hidden relative">
+
+  <!-- Navigation Sidebar -->
+  <nav class="fixed top-0 left-0 h-full w-56 bg-white dark:bg-gray-800 shadow-lg p-6 flex flex-col space-y-6 z-30">
+    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Home</a>
+    <a href="skills.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Skills & Certifications</a>
+    <a href="projects.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Projects</a>
+    <a href="achivements.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Achivements</a>
+    <a href="contact.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold">Contact</a>
+  </nav>
+
+  <!-- Dark Mode Toggle -->
+  <label id="dark-toggle-container" for="dark-toggle">
+    <input type="checkbox" id="dark-toggle" class="hidden" />
+    <div></div>
+    Dark Mode
+  </label>
+
+  <!-- Background Image -->
+  <div
+    class="fixed inset-0 z-[-2] bg-cover bg-center opacity-50"
+    style="background-image: url('laptop bg image.png');"
+    id="bg-image"
+  ></div>
+
+  <!-- Optional dark overlay to improve text readability -->
+  <div class="fixed inset-0 z-[-1] bg-black opacity-20"></div>
+
+  <!-- Main Content -->
+  <main class="flex flex-col items-center justify-center h-screen pl-56 p-6">
+    <h1 class="text-4xl font-bold mb-10">My Projects</h1>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl text-center">
+      <button class="project-btn bg-blue-600 text-white py-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105" data-project="capstone">
+        Capstone Project
+      </button>
+      <button class="project-btn bg-green-600 text-white py-6 rounded-lg hover:bg-green-700 transition transform hover:scale-105" data-project="internship">
+        Internship Project
+      </button>
+      <button class="project-btn bg-purple-600 text-white py-6 rounded-lg hover:bg-purple-700 transition transform hover:scale-105" data-project="finalyear">
+        Final Year Project
+      </button>
+    </div>
+  </main>
+
+  <!-- Project Modal -->
+  <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 p-4">
+    <div
+      class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white rounded-2xl shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+      style="min-height: 400px;"
+    >
+      <header class="flex justify-between items-center border-b border-gray-300 dark:border-gray-700 px-6 py-4">
+        <h2 id="project-title" class="text-3xl font-bold text-center flex-1"></h2>
+        <button id="close-project-modal" class="text-gray-500 hover:text-red-500 text-2xl font-bold ml-4">✖</button>
+      </header>
+
+      <div id="modal-content" class="flex flex-1 overflow-hidden">
+        <!-- Left side description -->
+        <div id="description-container" class="p-6 overflow-auto w-full">
+          <p id="project-description" class="text-lg leading-relaxed whitespace-pre-line"></p>
+        </div>
+
+        <!-- Right side file preview & controls -->
+        <div id="file-section" class="hidden border-l border-gray-300 dark:border-gray-700 w-1/2 p-6 flex flex-col overflow-auto">
+          <div class="flex justify-between items-center mb-4">
+            <span id="file-name" class="font-semibold text-lg truncate"></span>
+            <div class="flex gap-4">
+              <button id="download-btn" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-white text-sm">Download</button>
+              <button id="print-btn" class="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-white text-sm">Print</button>
+            </div>
+          </div>
+          <div id="file-preview" class="flex-1 border rounded overflow-hidden bg-white dark:bg-gray-900">
+            <!-- iframe for pdf preview or placeholder -->
+          </div>
+        </div>
+      </div>
+
+      <footer class="border-t border-gray-300 dark:border-gray-700 px-6 py-4 flex gap-4 justify-center">
+        <button id="btn-wordpdf" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50" disabled>
+          Word/PDF
+        </button>
+        <button id="btn-ppt" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg disabled:opacity-50" disabled>
+          PPT
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Responsive background image
+    const bg = document.getElementById('bg-image');
+    function setBackground() {
+      if (window.innerWidth < 768) {
+        bg.style.backgroundImage = "url('phone bg image.png')";
+      } else {
+        bg.style.backgroundImage = "url('laptop bg image.png')";
+      }
+    }
+    window.addEventListener('resize', setBackground);
+    setBackground();
+
+    // Dark mode toggle
+    const toggle = document.getElementById('dark-toggle');
+    const html = document.documentElement;
+    const toggleLabel = document.getElementById('dark-toggle-container');
+    if (
+      localStorage.getItem('theme') === 'dark' ||
+      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      html.classList.add('dark');
+      toggle.checked = true;
+      toggleLabel.classList.add('dark');
+    }
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        toggleLabel.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        toggleLabel.classList.remove('dark');
+      }
+    });
+
+    // Projects data with your descriptions and file paths
+    const projects = {
+      capstone: {
+        title: 'Capstone Project',
+        description: `The capstone project provided an in-depth financial and strategic evaluation of Lakshmi Machine Works (LMW), analyzing its revenue model, cost structures, and market positioning. Utilizing MS Power BI and SQL for data-driven insights, the study assessed risk exposure, forecasted performance, and examined investment strategies, innovation, and supply chain resilience. It identified key growth levers and operational inefficiencies, delivering high-impact recommendations to enhance LMW’s financial strength and competitive agility.`,
+        wordpdfUrl: 'vijay anandh capstone project pdf.pdf',  // your PDF file
+        pptUrl: 'vijay anandh capstone project ppt.ppsx'      // your PPT file
+      },
+      internship: {
+        title: 'Internship Project',
+        description: `The internship at Dalmia Cement (Bharat) Limited involved an in-depth analysis of financial operations within the organization, with hands-on experience in SAP ERP. Over a month, I engaged in financial data management, process optimization, and risk assessment, leveraging SAP for transactional analysis and reporting. The project encompassed a detailed evaluation of budgeting, cost control, and financial forecasting, providing strategic insights into operational efficiency. A comprehensive report was compiled, highlighting key financial trends, optimization opportunities, and recommendations to enhance financial performance and decision-making processes.`,
+        wordpdfUrl: 'vijay anandh iet word.docx',    // your Word file
+        pptUrl: 'vijay anandh iet ppt.ppsx'          // your PPT file
+      },
+      finalyear: {
+        title: 'Final Year Project',
+        description: `The final-year project analyzed the challenges of maintaining multiple Demat accounts across different brokers, leveraging both primary and secondary data. The study examined inefficiencies in portfolio management, increased transaction costs, taxation complexities, and regulatory compliance issues. Utilizing data-driven insights, it assessed investor behavior, financial implications, and risk exposure associated with fragmented holdings. A detailed report was compiled, presenting key findings, analytical interpretations, and strategic recommendations to optimize account consolidation, enhance cost efficiency, and streamline investment management.`,
+        wordpdfUrl: 'vijay anandh final year project pdf.pdf', // your PDF file
+        pptUrl: 'vijay anandh final year project ppt.ppsx'     // your PPT file
+      }
+    };
+
+    // Elements
+    const modal = document.getElementById('project-modal');
+    const projectTitleEl = document.getElementById('project-title');
+    const projectDescEl = document.getElementById('project-description');
+    const descContainer = document.getElementById('description-container');
+    const fileSection = document.getElementById('file-section');
+    const filePreview = document.getElementById('file-preview');
+    const fileNameEl = document.getElementById('file-name');
+    const downloadBtn = document.getElementById('download-btn');
+    const printBtn = document.getElementById('print-btn');
+    const btnWordPdf = document.getElementById('btn-wordpdf');
+    const btnPpt = document.getElementById('btn-ppt');
+
+    let currentProject = null;
+    let currentFileUrl = null;
+
+    // Show modal function
+    function showModal(projectKey) {
+      currentProject = projects[projectKey];
+      projectTitleEl.textContent = currentProject.title;
+      projectDescEl.textContent = currentProject.description;
+
+      // Clear file preview and hide file section initially
+      filePreview.innerHTML = '';
+      fileSection.classList.add('hidden');
+
+      // Enable buttons only if files exist
+      btnWordPdf.disabled = !currentProject.wordpdfUrl;
+      btnPpt.disabled = !currentProject.pptUrl;
+
+      // Show modal
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modal.classList.add('opacity-100');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Hide modal function
+    function hideModal() {
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modal.classList.remove('opacity-100');
+      document.body.style.overflow = '';
+      // Reset current state
+      currentProject = null;
+      currentFileUrl = null;
+      filePreview.innerHTML = '';
+      fileSection.classList.add('hidden');
+      btnWordPdf.disabled = true;
+      btnPpt.disabled = true;
+    }
+
+    // Event listeners on project buttons
+    document.querySelectorAll('.project-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const projKey = button.getAttribute('data-project');
+        showModal(projKey);
+      });
+    });
+
+    // Close modal button
+    document.getElementById('close-project-modal').addEventListener('click', hideModal);
+
+    // Close modal when clicking outside modal content
+    modal.addEventListener('click', e => {
+      if (e.target === modal) {
+        hideModal();
+      }
+    });
+
+    // Download button action
+    downloadBtn.addEventListener('click', () => {
+      if (!currentFileUrl) return;
+      // Trigger download
+      const a = document.createElement('a');
+      a.href = currentFileUrl;
+      a.download = currentFileUrl.split('/').pop();
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    // Print button action
+    printBtn.addEventListener('click', () => {
+      if (!currentFileUrl) return;
+      // Open in new tab and trigger print
+      const win = window.open(currentFileUrl);
+      win.focus();
+      // Printing might require user interaction or popup permission in some browsers
+      // So we just open the file, user can print manually
+    });
+
+    // Helper: check if a file is PDF or Word or PPT (for preview)
+    function getFileExtension(filename) {
+      return filename.split('.').pop().toLowerCase();
+    }
+
+    // Show file preview depending on file type
+    function showFilePreview(fileUrl) {
+      filePreview.innerHTML = '';
+      const ext = getFileExtension(fileUrl);
+      if (ext === 'pdf') {
+        // PDF preview with iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = fileUrl;
+        iframe.className = 'w-full h-full border-none';
+        filePreview.appendChild(iframe);
+      } else {
+        // No preview available for Word/PPT files
+        const placeholder = document.createElement('div');
+        placeholder.className = 'flex items-center justify-center h-full text-gray-500 dark:text-gray-400 italic p-4';
+        placeholder.textContent = 'Preview not available for this file type.';
+        filePreview.appendChild(placeholder);
+      }
+    }
+
+    // Word/PDF button click
+    btnWordPdf.addEventListener('click', () => {
+      if (!currentProject) return;
+      fileSection.classList.remove('hidden');
+      const url = currentProject.wordpdfUrl;
+      currentFileUrl = url;
+      fileNameEl.textContent = url;
+      showFilePreview(url);
+    });
+
+    // PPT button click
+    btnPpt.addEventListener('click', () => {
+      if (!currentProject) return;
+      fileSection.classList.remove('hidden');
+      const url = currentProject.pptUrl;
+      currentFileUrl = url;
+      fileNameEl.textContent = url;
+      showFilePreview(url);
+    });
+  </script>
+</body>
+</html>
